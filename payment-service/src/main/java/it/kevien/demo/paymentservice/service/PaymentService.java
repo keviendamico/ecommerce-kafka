@@ -31,11 +31,11 @@ public class PaymentService {
         boolean paymentConfirmed = ThreadLocalRandom.current().nextDouble() < 0.8;
         if (!paymentConfirmed) {
             log.warn("[PAYMENT] Payment declined - orderId={}", stock.orderId());
-            paymentFailedProducer.send(new PaymentFailed(stock.orderId(), "Payment declined", Instant.now().toEpochMilli()));
+            paymentFailedProducer.send(new PaymentFailed(stock.orderId(), stock.customerId(), "Payment declined", Instant.now().toEpochMilli()));
             return;
         }
         String paymentId = UUID.randomUUID().toString();
         log.info("[PAYMENT] Payment confirmed - orderId={}, paymentId={}", stock.orderId(), paymentId);
-        paymentConfirmedProducer.send(new PaymentConfirmed(stock.orderId(), paymentId, stock.totalAmount(), Instant.now().toEpochMilli()));
+        paymentConfirmedProducer.send(new PaymentConfirmed(stock.orderId(), stock.customerId(), paymentId, stock.totalAmount(), Instant.now().toEpochMilli()));
     }
 }
