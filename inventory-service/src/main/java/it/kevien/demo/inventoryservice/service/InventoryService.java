@@ -8,6 +8,7 @@ import it.kevien.demo.sharedevents.model.inventory.StockReserved;
 import it.kevien.demo.sharedevents.model.order.OrderCreated;
 import it.kevien.demo.sharedevents.model.order.OrderItem;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.time.Instant;
@@ -15,6 +16,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
+@Slf4j
 @Service
 public class InventoryService {
 
@@ -39,9 +41,12 @@ public class InventoryService {
                 .map(OrderItem::productId)
                 .toList();
         if (!rejectedProducts.isEmpty()) {
+            log.warn("[INVENTORY] Stock unavailable - orderId={}, products={}", order.orderId(), rejectedProducts);
             stockFailedProducer.send(new StockFailed(order.orderId(), "Quantity not available for the following products: " + String.join(", ", rejectedProducts), Instant.now().toEpochMilli()));
             return;
         }
-        stockReservedProducer.send(new StockReserved(order.orderId(), UUID.randomUUID().toString(), order.totalAmount(), Instant.now().toEpochMilli()));
+        String reservationId = UUID.randomUUID().toString();
+        log.info("[INVENTORY] Stock reserved - orderId={}, reservationId={}", order.orderId(), reservationId);
+        stockReservedProducer.send(new StockReserved(order.orderId(), reservationId, order.totalAmount(), Instant.now().toEpochMilli()));
     }
 }

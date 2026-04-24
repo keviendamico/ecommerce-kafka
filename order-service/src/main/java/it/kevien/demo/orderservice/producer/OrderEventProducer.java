@@ -3,9 +3,11 @@ package it.kevien.demo.orderservice.producer;
 import it.kevien.demo.sharedevents.model.order.OrderCreated;
 import it.kevien.demo.orderservice.configuration.OrderConfigurationProperties;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Component;
 
+@Slf4j
 @Component
 public class OrderEventProducer {
 
@@ -19,5 +21,6 @@ public class OrderEventProducer {
 
     public void send(OrderCreated event) {
         kafkaTemplate.send(properties.orderCreatedTopic(), event.orderId(), event);
+        log.info("[ORDER] OrderCreated published - orderId={}, customerId={}, total={}", event.orderId(), event.customerId(), event.totalAmount());
     }
 }

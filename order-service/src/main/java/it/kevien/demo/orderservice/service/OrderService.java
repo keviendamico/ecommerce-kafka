@@ -6,12 +6,14 @@ import it.kevien.demo.orderservice.model.dto.CreateOrderRequest;
 import it.kevien.demo.orderservice.model.dto.CreateOrderResponse;
 import it.kevien.demo.orderservice.producer.OrderEventProducer;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import java.time.Instant;
 import java.util.UUID;
 
+@Slf4j
 @Service
 public class OrderService {
 
@@ -23,6 +25,7 @@ public class OrderService {
 
     public CreateOrderResponse createOrder(CreateOrderRequest request) {
         String orderId = UUID.randomUUID().toString();
+        log.info("[ORDER] Creating order - orderId={}, customerId={}, items={}", orderId, request.customerId(), request.items().size());
         BigDecimal totalAmount = request.items()
                 .stream()
                 .map(item -> item.unitPrice().multiply(BigDecimal.valueOf(item.quantity())))
