@@ -1,0 +1,6 @@
+package it.kevien.demo.sharedevents.model.inventory;
+
+
+public record StockFailed(String orderId, String reason, long failedAt) {
+
+}

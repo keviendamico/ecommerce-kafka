@@ -1,10 +1,10 @@
 package it.kevien.demo.orderservice.service;
 
-import it.kevien.demo.sharedevents.model.OrderCreated;
-import it.kevien.demo.sharedevents.model.OrderItem;
+import it.kevien.demo.sharedevents.model.order.OrderCreated;
+import it.kevien.demo.sharedevents.model.order.OrderItem;
 import it.kevien.demo.orderservice.model.dto.CreateOrderRequest;
 import it.kevien.demo.orderservice.model.dto.CreateOrderResponse;
-import it.kevien.demo.orderservice.publisher.OrderEventPublisher;
+import it.kevien.demo.orderservice.producer.OrderEventProducer;
 
 import org.springframework.stereotype.Service;
 
@@ -15,10 +15,10 @@ import java.util.UUID;
 @Service
 public class OrderService {
 
-    private final OrderEventPublisher publisher;
+    private final OrderEventProducer producer;
 
-    public OrderService(OrderEventPublisher publisher) {
-        this.publisher = publisher;
+    public OrderService(OrderEventProducer producer) {
+        this.producer = producer;
     }
 
     public CreateOrderResponse createOrder(CreateOrderRequest request) {
@@ -34,7 +34,7 @@ public class OrderService {
                 totalAmount,
                 Instant.now().toEpochMilli()
         );
-        publisher.send(event);
+        producer.send(event);
         return new CreateOrderResponse(orderId);
     }
 }

@@ -1,4 +1,4 @@
-package it.kevien.demo.sharedevents.model;
+package it.kevien.demo.sharedevents.model.order;
 
 import java.math.BigDecimal;
 
